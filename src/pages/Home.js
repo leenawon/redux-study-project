@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 
-function Home() {
+function Home({todoArray}) {
   const [todo, setTodo] = useState("");
 
   // input onChange
@@ -22,8 +23,16 @@ function Home() {
         <input type="text" value={todo} onChange={inputChange} />
         <button type="submit">추가</button>
       </form>
+      <ul>
+        {JSON.stringify(todoArray)}
+      </ul>
     </div>
   )
 }
 
-export default Home;
+// redux로부터 state를 받아서 component에 props로 넘겨줌
+function mapStateToProps(state) {
+  return {todoArray: state};
+}
+
+export default connect(mapStateToProps)(Home);
