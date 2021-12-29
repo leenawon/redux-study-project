@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { storeActions } from '../reduxStore';
 
-function Home({todoArray}) {
+function Home({todoArray, addTodo}) {
   const [todo, setTodo] = useState("");
 
   // input onChange
@@ -12,6 +13,7 @@ function Home({todoArray}) {
   // form onSubmit
   const formSubmit = (e) => {
     e.preventDefault();
+    addTodo(todo);
     setTodo("");
   }
 
@@ -35,4 +37,13 @@ function mapStateToProps(state) {
   return {todoArray: state};
 }
 
-export default connect(mapStateToProps)(Home);
+// dispatch : action메세지를 reducer한테 전달해주는 역할
+function mapDispatchToProps(dispatch) {
+  return {
+    // add todo function을 props로 전달
+    addTodo: (todo) => dispatch(storeActions.addAction(todo))
+  };
+}
+
+// connect Home component & reduxStore (getState, dispatch)
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
