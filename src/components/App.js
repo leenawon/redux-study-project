@@ -9,6 +9,8 @@ function App() {
       <Routes>
         {/* Home Page */}
         <Route exact path="/" element={<Home/>} />
+        {/* Detail Page */}
+        <Route path="/:id" element={<Detail/>} />
       </Routes>
     </Router> 
   );
