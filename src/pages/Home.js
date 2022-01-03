@@ -34,8 +34,8 @@ function Home({todoArray, addTodo}) {
 }
 
 // redux로부터 state를 받아서 component에 props로 넘겨줌
-function mapStateToProps(state) {
-  return {todoArray: state};
+function mapStateToProps() {
+  return {todoArray:  JSON.parse(localStorage.getItem('toDoArray'))};
 }
 
 // dispatch : action메세지를 reducer한테 전달해주는 역할
