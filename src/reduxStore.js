@@ -1,5 +1,4 @@
-import { createAction, createReducer } from '@reduxjs/toolkit';
-import { createStore } from 'redux';
+import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
 
 // action constant
 // const ADD_TODO = "ADD_TODO";
@@ -56,7 +55,7 @@ const getTodo = () => {
 // localStorage에 데이터 추가 저장하기
 const setTodo = (arr) => {
   localStorage.setItem(TODOARRAY_KEY, JSON.stringify(arr));
-}
+};
 
 // Redux toolkit을 이용한 Reducer
 const reduxReducer = createReducer([], {
@@ -64,6 +63,7 @@ const reduxReducer = createReducer([], {
     let toDoArray = getTodo();
     const addToDoArray = [...toDoArray, {todo: action.payload, id: Date.now()}];
     setTodo(addToDoArray);
+    // state를 변경해주지 않으면 localStorage에는 반영이되어도 화면에는 변경사항이 반영이 안됨
     state.push(addToDoArray);
   },
   [deleteAction] : (state, action) => {
@@ -74,6 +74,7 @@ const reduxReducer = createReducer([], {
   }
 });
 
-const reduxStore = createStore(reduxReducer);
+// const reduxStore = createStore(reduxReducer);
+const reduxStore = configureStore({reducer: reduxReducer});
 export const storeActions = { addAction, deleteAction };
 export default reduxStore;
