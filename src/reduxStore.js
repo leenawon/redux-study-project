@@ -1,4 +1,4 @@
-import { createAction } from '@reduxjs/toolkit';
+import { createAction, createReducer } from '@reduxjs/toolkit';
 import { createStore } from 'redux';
 
 // action constant
@@ -29,24 +29,50 @@ const addAction = createAction("ADD_TODO");
 const deleteAction = createAction("DELETE_TODO");
 
 // redux reducer
-const reduxReducer = (state = [], action) => {
-  let getTodo;
-  switch (action.type) {
-    case addAction.type:
-      getTodo = JSON.parse(localStorage.getItem(TODOARRAY_KEY));
-      // concat() : 기존 배열에 추가하려는 배열을 합쳐서 새로운 배열을 반환
-      const addToDoArray = getTodo.concat({todo: action.payload, id: Date.now()});
-      localStorage.setItem(TODOARRAY_KEY, JSON.stringify(addToDoArray));
-      return addToDoArray;
-    case deleteAction.type:
-      getTodo = JSON.parse(localStorage.getItem(TODOARRAY_KEY));
-      const deleteToDoArray = getTodo.filter((todo) => todo.id !== action.payload);
-      localStorage.setItem(TODOARRAY_KEY, JSON.stringify(deleteToDoArray));
-      return deleteToDoArray;
-    default:
-      return state;
-  }
+// const reduxReducer = (state = [], action) => {
+//   let getTodo;
+//   switch (action.type) {
+//     case addAction.type:
+//       getTodo = JSON.parse(localStorage.getItem(TODOARRAY_KEY));
+//       // concat() : 기존 배열에 추가하려는 배열을 합쳐서 새로운 배열을 반환
+//       const addToDoArray = getTodo.concat({todo: action.payload, id: Date.now()});
+//       localStorage.setItem(TODOARRAY_KEY, JSON.stringify(addToDoArray));
+//       return addToDoArray;
+//     case deleteAction.type:
+//       getTodo = JSON.parse(localStorage.getItem(TODOARRAY_KEY));
+//       const deleteToDoArray = getTodo.filter((todo) => todo.id !== action.payload);
+//       localStorage.setItem(TODOARRAY_KEY, JSON.stringify(deleteToDoArray));
+//       return deleteToDoArray;
+//     default:
+//       return state;
+//   }
+// };
+
+// localStorage로 부터 데이터 받아오기
+const getTodo = () => {
+  return JSON.parse(localStorage.getItem(TODOARRAY_KEY));
 };
+
+// localStorage에 데이터 추가 저장하기
+const setTodo = (arr) => {
+  localStorage.setItem(TODOARRAY_KEY, JSON.stringify(arr));
+}
+
+// Redux toolkit을 이용한 Reducer
+const reduxReducer = createReducer([], {
+  [addAction] : (state, action) => {
+    let toDoArray = getTodo();
+    const addToDoArray = [...toDoArray, {todo: action.payload, id: Date.now()}];
+    setTodo(addToDoArray);
+    state.push(addToDoArray);
+  },
+  [deleteAction] : (state, action) => {
+    let toDoArray = getTodo();
+    const deleteToDoArray = toDoArray.filter((todo) => todo.id !== action.payload);
+    setTodo(deleteToDoArray);
+    state.push(deleteToDoArray);
+  }
+});
 
 const reduxStore = createStore(reduxReducer);
 export const storeActions = { addAction, deleteAction };
