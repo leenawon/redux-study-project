@@ -1,4 +1,4 @@
-import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 // action constant
 // const ADD_TODO = "ADD_TODO";
@@ -18,14 +18,14 @@ if(localStorage.getItem(TODOARRAY_KEY) === null) {
 // };
 
 // Redux toolkit createAction 함수 적용
-const addAction = createAction("ADD_TODO");
+// const addAction = createAction("ADD_TODO");
 
 // delete action
 // const deleteAction = (id) => {
 //   return {type: DELETE_TODO, id, getToDoArray: JSON.parse(localStorage.getItem(toDoArray))};
 // };
 
-const deleteAction = createAction("DELETE_TODO");
+// const deleteAction = createAction("DELETE_TODO");
 
 // redux reducer
 // const reduxReducer = (state = [], action) => {
@@ -58,23 +58,47 @@ const setTodo = (arr) => {
 };
 
 // Redux toolkit을 이용한 Reducer
-const reduxReducer = createReducer([], {
-  [addAction] : (state, action) => {
-    let toDoArray = getTodo();
-    const addToDoArray = [...toDoArray, {todo: action.payload, id: Date.now()}];
-    setTodo(addToDoArray);
-    // state를 변경해주지 않으면 localStorage에는 반영이되어도 화면에는 변경사항이 반영이 안됨
-    state.push(addToDoArray);
-  },
-  [deleteAction] : (state, action) => {
-    let toDoArray = getTodo();
-    const deleteToDoArray = toDoArray.filter((todo) => todo.id !== action.payload);
-    setTodo(deleteToDoArray);
-    state.push(deleteToDoArray);
+// const reduxReducer = createReducer([], {
+//   [addAction] : (state, action) => {
+//     let toDoArray = getTodo();
+//     const addToDoArray = [...toDoArray, {todo: action.payload, id: Date.now()}];
+//     setTodo(addToDoArray);
+//     // state를 변경해주지 않으면 localStorage에는 반영이되어도 화면에는 변경사항이 반영이 안됨
+//     state.push(addToDoArray);
+//   },
+//   [deleteAction] : (state, action) => {
+//     let toDoArray = getTodo();
+//     const deleteToDoArray = toDoArray.filter((todo) => todo.id !== action.payload);
+//     setTodo(deleteToDoArray);
+//     state.push(deleteToDoArray);
+//   }
+// });
+
+// createSlice 이용해서 reducer 작성
+const reduxReducer = createSlice({
+  name: "reduxReducer",
+  initialState: [],
+  reducers: {
+    // Add Action에 대한 Reducer
+    add: (state, action) => {
+      let toDoArray = getTodo();
+      // 기존의 concat 대신 전개연산자(...) 사용
+      const addToDoArray = [...toDoArray, {todo: action.payload, id: Date.now()}];
+      setTodo(addToDoArray);
+      // state를 변경해주지 않으면 localStorage에는 반영이되어도 화면에는 변경사항이 반영이 안됨
+      state.push(addToDoArray);
+    },
+    // Delete Action에 대한 Reducer
+    delete: (state, action) => {
+      let toDoArray = getTodo();
+      const deleteToDoArray = toDoArray.filter((todo) => todo.id !== action.payload);
+      setTodo(deleteToDoArray);
+      state.push(deleteToDoArray);
+    }
   }
 });
 
 // const reduxStore = createStore(reduxReducer);
-const reduxStore = configureStore({reducer: reduxReducer});
-export const storeActions = { addAction, deleteAction };
+const reduxStore = configureStore({reducer: reduxReducer.reducer});
+export const storeActions = { addAction: reduxReducer.actions.add, deleteAction: reduxReducer.actions.delete };
 export default reduxStore;
