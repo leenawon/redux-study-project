@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import ToDo from '../components/ToDo';
 import { storeActions } from '../reduxStore';
+import '../css/Home.css';
 
 function Home({todoArray, addTodo}) {
   const [todo, setTodo] = useState("");
@@ -19,10 +20,10 @@ function Home({todoArray, addTodo}) {
   }
 
   return (
-    <div>
-      <h4>Redux Study (mini todo)</h4>
+    <div className='home'>
+      <h1>minimo</h1>
       {/* Todo Form */}
-      <form onSubmit={formSubmit}>
+      <form className='form' onSubmit={formSubmit}>
         <input type="text" value={todo} onChange={inputChange} />
         <button type="submit">추가</button>
       </form>
@@ -42,7 +43,13 @@ function mapStateToProps() {
 function mapDispatchToProps(dispatch) {
   return {
     // add todo function을 props로 전달
-    addTodo: (todo) => dispatch(storeActions.addAction(todo))
+    addTodo: (todo) => {
+      if(todo !== "") {
+        dispatch(storeActions.addAction(todo))
+      } else {
+        alert("글을 입력해주세요!");
+      }
+    }
   };
 }
 
