@@ -18,7 +18,11 @@ function ToDo({todo, id, deleteTodo}) {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    deleteTodo: () => dispatch(storeActions.deleteAction(ownProps.id))
+    deleteTodo: () => {
+      if(window.confirm("삭제하시겠습니까?")) {
+        dispatch(storeActions.deleteAction(ownProps.id))
+      }
+    }
   };
 }
 
